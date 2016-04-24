@@ -8,7 +8,11 @@ add_executable(joysynth2 ${SOURCE_FILES}
     Synthesizer.cpp
     Synthesizer.h
     Controller.cpp
-    Controller.h)
+    Controller.h Plotter.cpp Plotter.h)
 target_link_libraries(joysynth2
                         "jack"
-                        "pthread")
+                        "pthread"
+                        "fftw3"
+                        "boost_iostreams"
+                        "boost_system"
+                        "boost_filesystem")
