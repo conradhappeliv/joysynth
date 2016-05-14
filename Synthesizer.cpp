@@ -2,13 +2,6 @@
 
 using namespace std;
 
-void Synthesizer::synthesize(vector<double>& out) {
-    int freq = 880;
-    for(int i = 0; i < sampleRate/freq; i++) {
-        out.push_back(cos(2.*M_PI*freq*i/sampleRate));
-    }
-}
-
 void Synthesizer::getBuffer(vector<double>& out) {
     if(!remaining.empty()) {
         if(remaining.size() > bufferSize) {
