@@ -33,7 +33,7 @@ void Plotter::plot(const std::vector<double> data, bool timeplot, bool freqplot)
         outdata.push_back(std::make_pair(i * sample_rate / fft_size,
                                          sqrt(pow(out[i][0], 2) + pow(out[i][1],2))/sample_rate));
 
-    std::vector<double> timedata;//(in+fft_size-data.size(), in+fft_size);
+    std::vector<double> timedata(in+fft_size-data.size(), in+fft_size);
     // time
     if(first_plot) {
         if(timeplot) {
