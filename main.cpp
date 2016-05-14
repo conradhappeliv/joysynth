@@ -1,22 +1,23 @@
+#define TIMEPLOT 0
+#define FREQPLOT 1
+
 #include <iostream>
-#include <cmath>
 #include <vector>
 
 #include "Controller.h"
 #include "Plotter.h"
+#include "Synthesizer.h"
 
 using namespace std;
 
 int main() {
     Controller js;
     Plotter p(44100, 32768);
-    int i = 0;
+    Synthesizer s(2000, 44100);
+    vector<double> in;
     while(true) {
-        vector<double> in;
-        for(int j = 0; j < 2000; j++)
-            in.push_back(cos((double)i++/44100.*440.*2.*M_PI));
-        if(i > 44100) i -= 44100;
-        p.plot(in);
+        s.getBuffer(in);
+        if(TIMEPLOT || FREQPLOT) p.plot(in, TIMEPLOT, FREQPLOT);
     }
     return 0;
 }
