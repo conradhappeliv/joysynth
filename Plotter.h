@@ -15,6 +15,7 @@ private:
     fftw_plan plan;
     int sample_rate;
     int fft_size;
+    int last_add_size = 2000;
     double* in;
     fftw_complex* out;
     bool first_plot = true;
@@ -23,7 +24,8 @@ private:
 public:
     Plotter();
     Plotter(int, int);
-    void plot(const std::vector<double>, bool, bool);
+    void add_data(const std::vector<double>);
+    void plot(bool, bool);
     ~Plotter();
 };
 

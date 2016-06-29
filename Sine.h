@@ -11,7 +11,7 @@ protected:
     virtual void synthesize(std::vector<double>&);
 public:
     Sine():Synthesizer() {};
-    Sine(int bufSize, int sampRate):Synthesizer(bufSize, sampRate) {};
+    Sine(int sampRate):Synthesizer(sampRate) {};
 };
 
 

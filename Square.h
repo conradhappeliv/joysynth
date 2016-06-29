@@ -10,7 +10,7 @@ protected:
     virtual void synthesize(std::vector<double>&);
 public:
     Square():Synthesizer() {};
-    Square(int bufSize, int sampRate):Synthesizer(bufSize, sampRate) {};
+    Square(int sampRate):Synthesizer(sampRate) {};
 };
 
 

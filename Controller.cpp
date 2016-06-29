@@ -2,12 +2,12 @@
 
 using namespace std;
 
-Controller::Controller() {
-    init("/dev/input/js0");
-}
+Controller::Controller() : Controller("/dev/input/js0") { }
 
 Controller::Controller(std::string fname) {
-    init(fname);
+    if(!init(fname)) {
+        cerr << "UNABLE TO OPEN " << fname << endl;
+    };
 }
 
 bool Controller::init(std::string fname) {

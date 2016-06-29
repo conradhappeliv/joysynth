@@ -14,7 +14,7 @@ add_executable(joysynth2 ${SOURCE_FILES}
     Sine.cpp
     Sine.h
     Square.cpp
-    Square.h)
+    Square.h Audio.cpp Audio.h)
 target_link_libraries(joysynth2
                         "jack"
                         "pthread"

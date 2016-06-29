@@ -2,6 +2,7 @@
 #define JOYSYNTH2_CONTROLLER_H
 
 #include <string>
+#include <iostream>
 #include <fstream>
 #include <thread>
 #include <unordered_map>

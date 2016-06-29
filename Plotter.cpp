@@ -3,7 +3,7 @@
 using namespace std;
 
 void Plotter::init() {
-    gp = new Gnuplot("gnuplot4");
+    gp = new Gnuplot();
 
     in = new double[fft_size];
     out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*fft_size);
@@ -23,9 +23,13 @@ Plotter::Plotter(int samp_rate, int FFT_s) {
     init();
 }
 
-void Plotter::plot(const std::vector<double> data, bool timeplot, bool freqplot) {
+void Plotter::add_data(const std::vector<double> data) {
     std::copy(in+data.size(), in+fft_size, in); // shift input array left
     std::copy(data.cbegin(), data.cend(), in+fft_size-data.size()); // new data -> input array
+    last_add_size = data.size();
+}
+
+void Plotter::plot(bool timeplot, bool freqplot) {
     fftw_execute(plan);
 
     std::vector<std::pair<double, double>> outdata;
@@ -33,17 +37,17 @@ void Plotter::plot(const std::vector<double> data, bool timeplot, bool freqplot)
         outdata.push_back(std::make_pair(i * sample_rate / fft_size,
                                          sqrt(pow(out[i][0], 2) + pow(out[i][1],2))/sample_rate));
 
-    std::vector<double> timedata(in+fft_size-data.size(), in+fft_size);
+    std::vector<double> timedata(in+fft_size-last_add_size, in+fft_size);
     // time
     if(first_plot) {
         if(timeplot) {
-            *gp << "set term qt 0\n";
+            *gp << "set term x11 0\n";
             *gp << "plot '-' with lines\n";
             gp->send1d(timedata);
         }
 
         if(freqplot) {
-            *gp << "set term qt 1\n";
+            *gp << "set term x11 1\n";
             *gp << "set yrange [-1:1]\n";
             *gp << "plot '-' with lines\n";
             gp->send1d(outdata);
@@ -51,12 +55,12 @@ void Plotter::plot(const std::vector<double> data, bool timeplot, bool freqplot)
         first_plot = false;
     } else {
         if(timeplot) {
-            *gp << "set term qt 0\n";
+            *gp << "set term x11 0\n";
             *gp << "replot\n";
             gp->send1d(timedata);
         }
         if(freqplot) {
-            *gp << "set term qt 1\n";
+            *gp << "set term x11 1\n";
             *gp << "replot\n";
             gp->send1d(outdata);
         }
