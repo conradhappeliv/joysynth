@@ -17,5 +17,6 @@ void Synthesizer::getBuffer(vector<double>& out, int size = 0) {
         remaining.assign(out.begin()+size, out.end());
         out.erase(out.begin()+size, out.end());
     }
+    transform(out.begin(), out.end(), out.begin(), bind1st(multiplies<double>(), amplitude));
 }
 

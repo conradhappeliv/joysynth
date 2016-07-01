@@ -18,7 +18,7 @@ public:
             sampleRate(sampRate) {};
     void getBuffer(std::vector<double>&, int);
     void setFrequency(double freq) { frequency = freq; }
-    void setAmplitude(double amp) { std::max(0., std::min(1., amp)); }
+    void setAmplitude(double amp) { amplitude = std::max(0., std::min(1., amp)); }
 };
 
 #endif //JOYSYNTH2_SYNTHESIZER_H
