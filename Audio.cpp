@@ -8,9 +8,13 @@ void Audio::set_callback(function<vector<double> (int)> f) {
     callback = f;
 }
 
+Audio::~Audio() {
+    jack_client_close(client);
+}
+
 void Audio::init_jack() {
     jack_status_t status;
-    jack_client_t* client = jack_client_open("JoySynth", JackNullOption, &status, NULL);
+    client = jack_client_open("JoySynth", JackNullOption, &status, NULL);
     if(client == NULL) {
         std::cerr << "Could not open JACK client" << std::endl;
         return;
