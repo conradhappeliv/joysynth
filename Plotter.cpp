@@ -33,7 +33,7 @@ void Plotter::plot(bool timeplot, bool freqplot) {
     fftw_execute(plan);
 
     std::vector<std::pair<double, double>> outdata;
-    for(int i = 0; i < 2000; i++)
+    for(int i = 0; i < 3500; i++)
         outdata.push_back(std::make_pair(i * sample_rate / fft_size,
                                          sqrt(pow(out[i][0], 2) + pow(out[i][1],2))/sample_rate));
 
