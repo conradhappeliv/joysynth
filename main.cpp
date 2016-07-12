@@ -30,6 +30,8 @@ int main() {
     Audio a;
 
     int octave = 4;
+    double prev_freq = 440;
+    double smoothing = .65; // portamento/rate of change, 0-1 (0 is instant, 1 never moves)
 
     // assign buttons
     js.set_button_press_callback(2, [&octave](){ if(octave >= 2) octave--; });
@@ -40,6 +42,8 @@ int main() {
         // course * fine pitch
         double newfreq = 440*pow(2, -4+octave)*(pow(2, js.axis(1)*-1/32767.));
         newfreq *= pow(2, js.axis(0)/32767.)/6.-(.5/6+.125-1);
+        if(smoothing) newfreq = (newfreq*(1-smoothing) + prev_freq*(1+smoothing)) / 2.;
+        prev_freq = newfreq;
         s1.setFrequency(newfreq);
         s2.setFrequency(newfreq);
         s3.setFrequency(newfreq);
