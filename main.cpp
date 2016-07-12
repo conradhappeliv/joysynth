@@ -19,7 +19,10 @@
 using namespace std;
 
 int main() {
-    // buttons: A B X Y LB RB SEL STA
+    // program parameters
+    double smoothing = .65; // portamento/rate of change, 0-1 (0 is instant, 1 never moves)
+
+    // globals
     Controller js;
     Plotter p(44100, 32768);
     Sine s1(44100);
@@ -28,12 +31,14 @@ int main() {
     Triangle s4(44100);
     ConvReverb reverb;
     Audio a;
-
     int octave = 4;
     double prev_freq = 440;
-    double smoothing = .65; // portamento/rate of change, 0-1 (0 is instant, 1 never moves)
+    bool mod_on = false;
 
     // assign buttons
+    // A B X Y LB RB SEL STA
+    js.set_button_press_callback(0, [&mod_on]() { mod_on = true; });
+    js.set_button_release_callback(0, [&mod_on]() { mod_on = false; });
     js.set_button_press_callback(2, [&octave](){ if(octave >= 2) octave--; });
     js.set_button_press_callback(3, [&octave](){ if(octave <= 7) octave++; });
 
@@ -44,14 +49,20 @@ int main() {
         newfreq *= pow(2, js.axis(0)/32767.)/6.-(.5/6+.125-1);
         if(smoothing) newfreq = (newfreq*(1-smoothing) + prev_freq*(1+smoothing)) / 2.;
         prev_freq = newfreq;
+
+        // amplitude
+        double overallamp = (js.axis(2) + 32768)/65536.;
+        double ampx = js.axis(3)/32767.;
+        double ampy = js.axis(4)*-1/32767.;
+
+        s1.setMod(mod_on);
+        s2.setMod(mod_on);
+        s3.setMod(mod_on);
+        s4.setMod(mod_on);
         s1.setFrequency(newfreq);
         s2.setFrequency(newfreq);
         s3.setFrequency(newfreq);
         s4.setFrequency(newfreq);
-
-        double overallamp = (js.axis(2) + 32768)/65536.;
-        double ampx = js.axis(3)/32767.;
-        double ampy = js.axis(4)*-1/32767.;
         s1.setAmplitude(overallamp * (.5 + .5*ampy));
         s2.setAmplitude(overallamp * (.5 + .5*ampy*-1));
         s3.setAmplitude(overallamp * (.5 + .5*ampx));

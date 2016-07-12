@@ -41,8 +41,8 @@ void Controller::poll() {
         read_message();
         if(js_event.type & 0x1) {
             if(buttons[js_event.number] != (bool) js_event.value) {
-                if(js_event.value && on_button_press.count(js_event.number)) on_button_press[js_event.number]();
-                else if(!js_event.value && on_button_release.count(js_event.number)) on_button_release[js_event.number]();
+                if(js_event.value == 1 && on_button_press.count(js_event.number)) on_button_press[js_event.number]();
+                else if(js_event.value == 0 && on_button_release.count(js_event.number)) on_button_release[js_event.number]();
             }
             buttons[js_event.number] = js_event.value;
         } else // axis
