@@ -5,7 +5,9 @@ using namespace std;
 void Synthesizer::getBuffer(vector<double>& out, int size = 0) {
     if(!remaining.empty()) {
         if(remaining.size() > size) {
+            out.resize(size);
             move(remaining.begin(), remaining.begin()+size, out.begin());
+            remaining.erase(remaining.begin(), remaining.begin()+size);
             return;
         } else {
             swap(remaining, out);

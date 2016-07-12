@@ -29,9 +29,16 @@ int main() {
     ConvReverb reverb;
     Audio a;
 
+    int octave = 4;
+
+    // assign buttons
+    js.set_button_press_callback(2, [&octave](){ if(octave >= 2) octave--; });
+    js.set_button_press_callback(3, [&octave](){ if(octave <= 7) octave++; });
+
+    // main audio callback
     a.set_callback([&](int n) {
         // course * fine pitch
-        double newfreq = 440*(pow(2, js.axis(1)*-1/32767.));
+        double newfreq = 440*pow(2, -4+octave)*(pow(2, js.axis(1)*-1/32767.));
         newfreq *= pow(2, js.axis(0)/32767.)/6.-(.5/6+.125-1);
         s1.setFrequency(newfreq);
         s2.setFrequency(newfreq);

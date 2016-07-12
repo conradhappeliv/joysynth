@@ -5,6 +5,7 @@
 #include <iostream>
 #include <fstream>
 #include <thread>
+#include <functional>
 #include <unordered_map>
 
 class Controller {
@@ -19,6 +20,8 @@ private:
     std::unordered_map<int, bool> buttons;
     std::unordered_map<int, short> axes;
     std::thread poll_thread;
+    std::unordered_map<int, std::function<void()>> on_button_press;
+    std::unordered_map<int, std::function<void()>> on_button_release;
 
     bool init(std::string);
     void get_initial_state();
@@ -33,6 +36,8 @@ public:
     size_t num_of_axes() { return axes.size(); }
     bool button(int button_num) { return buttons[button_num]; }
     short axis(int axis_num) { return axes[axis_num]; }
+    void set_button_press_callback(int button_num, std::function<void()> fun) { on_button_press[button_num] = fun; }
+    void set_button_release_callback(int button_num, std::function<void()> fun) { on_button_release[button_num] = fun; }
 };
 
 

@@ -39,9 +39,13 @@ void Controller::read_message() {
 void Controller::poll() {
     while(true) { // TODO: might be better to make this stop sometime
         read_message();
-        if(js_event.type & 0x1)
+        if(js_event.type & 0x1) {
+            if(buttons[js_event.number] != (bool) js_event.value) {
+                if(js_event.value && on_button_press.count(js_event.number)) on_button_press[js_event.number]();
+                else if(!js_event.value && on_button_release.count(js_event.number)) on_button_release[js_event.number]();
+            }
             buttons[js_event.number] = js_event.value;
-        else // axis
+        } else // axis
             axes[js_event.number] = js_event.value;
     }
 }
