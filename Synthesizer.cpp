@@ -11,6 +11,7 @@ void Synthesizer::init() {
 }
 
 void Synthesizer::getBuffer(vector<double>& out, int size = 0) {
+    out.reserve(size);
     if(!remaining.empty()) {
         if(remaining.size() > size) {
             out.resize(size);

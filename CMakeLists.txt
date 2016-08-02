@@ -12,7 +12,7 @@ set(SOURCE_FILES Synthesizer.cpp Synthesizer.h
                  Effect.cpp Effect.h
                  ConvReverb.cpp ConvReverb.h
                  Sawtooth.cpp Sawtooth.h
-                 Triangle.cpp Triangle.h)
+                 Triangle.cpp Triangle.h Delay.cpp Delay.h)
 set(LIBRARIES "jack"
               "pthread"
               "fftw3"
