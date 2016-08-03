@@ -12,12 +12,12 @@ void Effect::process(vector<double>& buffer) {
     move(remaining.begin(), remaining.begin() + amt, buffer.begin());
     remaining.erase(remaining.begin(), remaining.begin() + amt);
     // add the newly-processed samples
-    transform(processed.begin(), processed.begin() + buffer.size(), buffer.begin(), buffer.begin(), plus<double>());
+    for(int i = 0; i < buffer.size(); i++) buffer[i] = buffer[i] + processed[i];
     // erase what we just added and add the remainder to the feedback vector
     processed.erase(processed.begin(), processed.begin() + buffer.size());
     if(remaining.size() < processed.size())
         remaining.resize(processed.size());
-    transform(processed.begin(), processed.end(), remaining.begin(), remaining.begin(), plus<double>());
+    for(int i = 0; i < processed.size(); i++) remaining[i] = remaining[i] + processed[i];
 }
 
 // based on: http://stackoverflow.com/a/8425094

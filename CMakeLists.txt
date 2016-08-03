@@ -24,4 +24,4 @@ add_executable(joysynth2 ${SOURCE_FILES}
 add_executable(benchmark ${SOURCE_FILES}
     benchmark.cpp)
 target_link_libraries(joysynth2 ${LIBRARIES})
-target_link_libraries(benchmark ${LIBRARIES})
+target_link_libraries(benchmark ${LIBRARIES} "gomp")
