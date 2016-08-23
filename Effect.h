@@ -8,9 +8,10 @@
 class Effect {
 public:
     void process(std::vector<double>&);
-    virtual std::vector<double> subprocess(const std::vector<double>) = 0;
+    virtual void subprocess(const std::vector<double>) = 0;
 protected:
     std::vector<double> timeConvolve(std::vector<double>, std::vector<double>);
+    std::vector<double> processed;
 private:
     std::vector<double> remaining;
 };

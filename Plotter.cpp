@@ -7,8 +7,8 @@ void Plotter::init() {
 
     in = new double[fft_size];
     out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex)*fft_size);
+    plan = fftw_plan_dft_r2c_1d(fft_size, in, out, FFTW_PATIENT);
     for(int i = 0; i < fft_size; i++) { in[i] = 0; }
-    plan = fftw_plan_dft_r2c_1d(fft_size, in, out, FFTW_ESTIMATE);
 }
 
 Plotter::Plotter() { // default sample rate & FFT size

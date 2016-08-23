@@ -14,7 +14,6 @@ void Synthesizer::getBuffer(vector<double>& out, int size = 0) {
     out.reserve(size);
     if(!remaining.empty()) {
         if(remaining.size() > size) {
-            out.resize(size);
             move(remaining.begin(), remaining.begin()+size, out.begin());
             remaining.erase(remaining.begin(), remaining.begin()+size);
         } else {
@@ -36,6 +35,6 @@ void Synthesizer::getBuffer(vector<double>& out, int size = 0) {
         remaining.assign(out.begin()+size, out.end());
         out.erase(out.begin()+size, out.end());
     }
-    transform(out.begin(), out.end(), out.begin(), bind1st(multiplies<double>(), amplitude));
+    for(int i = 0; i < out.size(); i++) out[i] *= amplitude;
 }
 

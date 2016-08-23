@@ -4,6 +4,11 @@ Audio::Audio() {
     init_jack();
 }
 
+Audio::Audio(bool d, int block_size) {
+    debug = d;
+    debug_block_size = block_size;
+}
+
 void Audio::set_callback(function<vector<double> (int)> f) {
     callback = f;
 }
@@ -34,6 +39,15 @@ void Audio::init_jack() {
     out2 = jack_port_register(client, "output2", JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
     if(out1 == nullptr || out2 == nullptr) {
         std::cerr << "No more JACK ports available" << std::endl;
+        return;
+    }
+}
+
+void Audio::activate() {
+    if(debug) {
+        thread([](function<vector<double> (int)> c, int size) {
+            while(true) c(size);
+        }, callback, debug_block_size);
         return;
     }
 

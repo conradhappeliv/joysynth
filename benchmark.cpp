@@ -14,7 +14,7 @@ int main() {
     s.setFrequency(440);
     s.setAmplitude(1);
     auto start = omp_get_wtime();
-    for(int i = 0; i < 10000; i++) {
+    for(int i = 0; i < 50; i++) {
         vector<double> res;
         s.getBuffer(res, 1024);
         rev.process(res);

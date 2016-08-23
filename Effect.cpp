@@ -4,7 +4,8 @@ using namespace std;
 
 void Effect::process(vector<double>& buffer) {
     // do the effect processing
-    vector<double> processed = subprocess(buffer);
+    processed.clear();
+    subprocess(buffer);
     // zero buffer (may not be necessary)
     for(auto i = buffer.begin(); i != buffer.end(); i++) *i = 0;
     // move any feedback into the result
