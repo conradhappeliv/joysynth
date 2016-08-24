@@ -8,6 +8,7 @@
 #include <functional>
 #include <boost/filesystem.hpp>
 
+#include "RTArray.h"
 #include "Controller.h"
 #include "Audio.h"
 #include "Plotter.h"
@@ -71,19 +72,10 @@ int main() {
     js.set_button_press_callback(9, [&pitch_lock]() { pitch_lock = !pitch_lock; });
     js.set_button_press_callback(10, [&wave_lock]() { wave_lock = !wave_lock; });
 
-    vector<double> res1, res2, res3, res4;
-    res1.reserve(1024);
-    res2.reserve(1024);
-    res3.reserve(1024);
-    res4.reserve(1024);
+    RTArray<double> res1(1024), res2(1024), res3(1024), res4(1024);
 
     // main audio callback
     a.set_callback([&](int n) {
-        res1.clear();
-        res2.clear();
-        res3.clear();
-        res4.clear();
-
         if(activated) {
             // course pitch
             double newfreq = prev_freq;
@@ -115,32 +107,31 @@ int main() {
                 ampx = js.axis(3) / 32767.;
                 ampy = js.axis(4) * -1 / 32767.;
             }
-            s1.setAmplitude(.67);//overallamp * (.5 + .5 * ampy));
-            s2.setAmplitude(.11);//overallamp * (.5 + .5 * ampy * -1));
-            s3.setAmplitude(.11);//overallamp * (.5 + .5 * ampx));
-            s4.setAmplitude(.11);//overallamp * (.5 + .5 * ampx * -1));
+            s1.setAmplitude(overallamp * (.5 + .5 * ampy));
+            s2.setAmplitude(overallamp * (.5 + .5 * ampy * -1));
+            s3.setAmplitude(overallamp * (.5 + .5 * ampx));
+            s4.setAmplitude(overallamp * (.5 + .5 * ampx * -1));
 
             s1.setMod(mod_on);
             s2.setMod(mod_on);
             s3.setMod(mod_on);
             s4.setMod(mod_on);
 
-            s1.getBuffer(res1, n);
-            s2.getBuffer(res2, n);
-            s3.getBuffer(res3, n);
-            s4.getBuffer(res4, n);
-            transform(res1.begin(), res1.end(), res2.begin(), res1.begin(), plus<double>());
-            transform(res1.begin(), res1.end(), res3.begin(), res1.begin(), plus<double>());
-            transform(res1.begin(), res1.end(), res4.begin(), res1.begin(), plus<double>());
-            transform(res1.begin(), res1.end(), res1.begin(), bind1st(multiplies<double>(), .25));
-            //transform(res1.begin(), res1.end(), res1.begin(), bind1st(multiplies<double>(), .15));
+            s1.getBuffer(res1);
+            s2.getBuffer(res2);
+            s3.getBuffer(res3);
+            s4.getBuffer(res4);
+            for(int i = 0; i < n; i++) {
+                res1[i] += res2[i] + res3[i] + res4[i];
+                res1[i] *= .25;
+            }
         } else {
-            res1 = vector<double>(n, 0.);
+            //res1 = vector<double>(n, 0.);
         }
 
-        //reverb.process(res1);
+        reverb.process(res1);
         //d.process(res1);
-        if(TIMEPLOT || FREQPLOT) p.add_data(res1);
+        //if(TIMEPLOT || FREQPLOT) p.add_data(res1);
         return res1;
     });
 

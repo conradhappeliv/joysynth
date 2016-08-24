@@ -2,23 +2,26 @@
 
 using namespace std;
 
-void Effect::process(vector<double>& buffer) {
+void Effect::process(RTArray<double>& buffer) {
+    size_t size = buffer.size();
+    for(int i = 0; i < processedsize; i++) processed[i] = 0;
     // do the effect processing
-    processed.clear();
     subprocess(buffer);
     // zero buffer (may not be necessary)
-    for(auto i = buffer.begin(); i != buffer.end(); i++) *i = 0;
+    for(auto i = 0; i != size; i++) buffer[i] = 0;
     // move any feedback into the result
-    int amt = min(remaining.size(), buffer.size());
-    move(remaining.begin(), remaining.begin() + amt, buffer.begin());
+    int amt = min(remaining.size(), size);
+    for(size_t i = 0; i < amt; i++) buffer[i] = remaining[i];
     remaining.erase(remaining.begin(), remaining.begin() + amt);
     // add the newly-processed samples
-    for(int i = 0; i < buffer.size(); i++) buffer[i] = buffer[i] + processed[i];
+    for(int i = 0; i < size; i++) buffer[i] = buffer[i] + processed[i];
     // erase what we just added and add the remainder to the feedback vector
-    processed.erase(processed.begin(), processed.begin() + buffer.size());
-    if(remaining.size() < processed.size())
-        remaining.resize(processed.size());
-    for(int i = 0; i < processed.size(); i++) remaining[i] = remaining[i] + processed[i];
+    if(processedsize > size) {
+        if(remaining.size() < processedsize-size) {
+            remaining.insert(remaining.end(), processedsize-size-remaining.size(), 0);
+        }
+        for(int i = size; i < processedsize; i++) remaining[i-size] += processed[i];
+    }
 }
 
 // based on: http://stackoverflow.com/a/8425094

@@ -9,7 +9,7 @@ public:
     Delay();
     ~Delay();
 protected:
-    virtual void subprocess(const std::vector<double>);
+    virtual void subprocess(const RTArray<double>&);
 };
 
 

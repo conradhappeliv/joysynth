@@ -4,6 +4,7 @@
 #include <vector>
 #include <array>
 #include <algorithm>
+#include "RTArray.h"
 
 class Synthesizer {
 private:
@@ -17,11 +18,12 @@ protected:
     double frequency = 440;
     double amplitude = 1;
     virtual void synthesize(std::vector<double>&) = 0;
+    std::vector<double> processed;
 public:
     Synthesizer() { init(); };
     Synthesizer(int sampRate):
             sampleRate(sampRate) { init(); };
-    void getBuffer(std::vector<double>&, int);
+    void getBuffer(RTArray<double>);
     void setFrequency(double freq) { frequency = freq; }
     void setAmplitude(double amp) { amplitude = std::max(0., std::min(1., amp)); }
     void setMod(bool on) { mod_on = on; };

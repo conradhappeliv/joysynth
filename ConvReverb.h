@@ -21,7 +21,7 @@ public:
     ConvReverb();
     ~ConvReverb();
 protected:
-    virtual void subprocess(const std::vector<double>);
+    virtual void subprocess(const RTArray<double>&);
 private:
     const int block_size = 1024;
     int res_size;

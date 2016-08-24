@@ -6,6 +6,7 @@
 #include <functional>
 #include <vector>
 #include <thread>
+#include "RTArray.h"
 
 using namespace std;
 
@@ -13,11 +14,11 @@ class Audio {
 public:
     Audio();
     Audio(bool, int);
-    void set_callback(function<vector<double> (int)>);
+    void set_callback(function<RTArray<double> (int)>);
     void activate();
     ~Audio();
 private:
-    std::function<vector<double> (int)> callback = [](int n) { return vector<double>(n); };
+    std::function<RTArray<double> (int)> callback;
     bool debug = false;
     int debug_block_size = 1024;
     jack_client_t* client;

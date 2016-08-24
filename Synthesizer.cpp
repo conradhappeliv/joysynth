@@ -10,31 +10,39 @@ void Synthesizer::init() {
     mod_pos = mod_lfo.begin();
 }
 
-void Synthesizer::getBuffer(vector<double>& out, int size = 0) {
-    out.reserve(size);
+void Synthesizer::getBuffer(RTArray<double> out) {
+    size_t size = out.size();
+    size_t insertedsize = 0;
     if(!remaining.empty()) {
         if(remaining.size() > size) {
-            move(remaining.begin(), remaining.begin()+size, out.begin());
+            for(size_t i = 0; i < size; i++) out[i] = remaining[i];
+            insertedsize = size;
             remaining.erase(remaining.begin(), remaining.begin()+size);
         } else {
-            swap(remaining, out);
+            for(size_t i = 0; i < remaining.size(); i++) out[i] = remaining[i];
+            insertedsize += remaining.size();
             remaining.clear();
         }
     }
     double tmpfreq = frequency;
-    while(out.size() < size) {
+    while(insertedsize < size) {
         if(mod_on) {
             frequency = tmpfreq*(*mod_pos);
             mod_pos += (int)(sampleRate/frequency);
             if(mod_pos >= mod_lfo.end()) mod_pos -= (int) mod_lfo.size();
         }
-        synthesize(out);
+        processed.clear();
+        synthesize(processed);
+        if(insertedsize + processed.size() > size) {
+            for(size_t i = 0; i < size-insertedsize; i++) out[insertedsize+i] = processed[i];
+            for(size_t i = size-insertedsize; i < processed.size(); i++) remaining.push_back(processed[i]);
+            insertedsize = size;
+        } else {
+            for(size_t i = 0; i < processed.size(); i++) out[insertedsize+i] = processed[i];
+            insertedsize += processed.size();
+        }
     }
-    frequency = tmpfreq;
-    if(out.size() > size) {
-        remaining.assign(out.begin()+size, out.end());
-        out.erase(out.begin()+size, out.end());
-    }
-    for(int i = 0; i < out.size(); i++) out[i] *= amplitude;
+
+    for(int i = 0; i < size; i++) out[i] *= amplitude;
 }
 

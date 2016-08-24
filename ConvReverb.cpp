@@ -36,7 +36,8 @@ ConvReverb::ConvReverb() {
         sampsprocessed += block_size;
     }
 
-    processed.reserve(res_size);
+    processed = new double[fir.size() + 1024 - 1];
+    processedsize = fir.size() + 1024 - 1;
 }
 
 ConvReverb::~ConvReverb() {
@@ -44,11 +45,11 @@ ConvReverb::~ConvReverb() {
     fftw_destroy_plan(ffft_plan);
 }
 
-void ConvReverb::subprocess(const vector<double> in){
-    processed.resize(res_size, 0);
+void ConvReverb::subprocess(const RTArray<double>& in){
+    size_t size = in.size();
     // fft of input vector
-    copy(in.begin(), in.begin()+in.size(), ffft_in.begin());
-    for(int i = in.size(); i < in.size()+block_size; i++) ffft_in[i] = 0;
+    for(size_t i = 0; i < size; i++) ffft_in[i] = in[i];
+    for(int i = size; i < size+block_size-1; i++) ffft_in[i] = 0;
     fftw_execute(ffft_plan);
 
     int sampsprocessed = 0;
@@ -64,5 +65,5 @@ void ConvReverb::subprocess(const vector<double> in){
         sampsprocessed += block_size;
     }
 
-    for(int i = 0; i < in.size(); i++) processed[i] += in[i];
+    for(int i = 0; i < size; i++) processed[i] += in[i];
 };
