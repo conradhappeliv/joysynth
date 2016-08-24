@@ -14,11 +14,11 @@ class Audio {
 public:
     Audio();
     Audio(bool, int);
-    void set_callback(function<RTArray<double> (int)>);
+    void set_callback(function<RTArray<double>* (int)>);
     void activate();
     ~Audio();
 private:
-    std::function<RTArray<double> (int)> callback;
+    std::function<RTArray<double>* (int)> callback;
     bool debug = false;
     int debug_block_size = 1024;
     jack_client_t* client;

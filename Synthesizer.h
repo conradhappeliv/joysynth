@@ -23,7 +23,7 @@ public:
     Synthesizer() { init(); };
     Synthesizer(int sampRate):
             sampleRate(sampRate) { init(); };
-    void getBuffer(RTArray<double>);
+    void getBuffer(RTArray<double>&);
     void setFrequency(double freq) { frequency = freq; }
     void setAmplitude(double amp) { amplitude = std::max(0., std::min(1., amp)); }
     void setMod(bool on) { mod_on = on; };

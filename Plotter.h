@@ -8,6 +8,7 @@
 
 #include "gnuplot-iostream.h"
 #include "fftw3.h"
+#include "RTArray.h"
 
 class Plotter {
 private:
@@ -15,7 +16,7 @@ private:
     fftw_plan plan;
     int sample_rate;
     int fft_size;
-    int last_add_size = 2000;
+    size_t last_add_size = 2000;
     double* in;
     fftw_complex* out;
     bool first_plot = true;
@@ -24,7 +25,7 @@ private:
 public:
     Plotter();
     Plotter(int, int);
-    void add_data(const std::vector<double>);
+    void add_data(const RTArray<double>&);
     void plot(bool, bool);
     ~Plotter();
 };

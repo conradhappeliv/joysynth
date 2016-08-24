@@ -10,13 +10,12 @@ class RTArray {
 public:
     RTArray() {};
     RTArray(size_t newsize) { resize(newsize); }
-    // TODO: Destructor
-//    RTArray(const RTArray& old) {
-//        s = old.s;
-//        data = new T[s];
-//        for(size_t i = 0; i < s; i++) data[i] = old.data[i];
-//    }
-//    ~RTArray() { if(data != nullptr) delete[] data; }
+    RTArray(const RTArray& old) {
+        s = old.s;
+        data = new T[s];
+        for(size_t i = 0; i < s; i++) data[i] = old.data[i];
+    }
+    ~RTArray() { if(data != nullptr) delete[] data; }
     void zero() { for(size_t i = 0; i < s; i++) data[i] = 0; }
     void resize(size_t newsize) {
         T* newdata = new T[newsize];

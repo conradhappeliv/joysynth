@@ -10,7 +10,7 @@ void Synthesizer::init() {
     mod_pos = mod_lfo.begin();
 }
 
-void Synthesizer::getBuffer(RTArray<double> out) {
+void Synthesizer::getBuffer(RTArray<double>& out) {
     size_t size = out.size();
     size_t insertedsize = 0;
     if(!remaining.empty()) {

@@ -9,7 +9,7 @@ Audio::Audio(bool d, int block_size) {
     debug_block_size = block_size;
 }
 
-void Audio::set_callback(function<RTArray<double> (int)> f) {
+void Audio::set_callback(function<RTArray<double>* (int)> f) {
     callback = f;
 }
 
@@ -29,9 +29,9 @@ void Audio::init_jack() {
         jack_default_audio_sample_t *outbuffer1, *outbuffer2;
         outbuffer1 = (jack_default_audio_sample_t *) jack_port_get_buffer(a->out1, nframes);
         outbuffer2 = (jack_default_audio_sample_t *) jack_port_get_buffer(a->out2, nframes);
-        RTArray<double> res = a->callback(nframes);
-        for(size_t i = 0; i < res.size(); i++) {
-            outbuffer1[i] = outbuffer2[i] = res[i];
+        RTArray<double>* res = a->callback(nframes);
+        for(size_t i = 0; i < res->size(); i++) {
+            outbuffer1[i] = outbuffer2[i] = (*res)[i];
         }
         return 0;
     }, this);

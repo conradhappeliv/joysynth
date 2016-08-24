@@ -102,7 +102,7 @@ int main() {
             s4.setFrequency(newfreq);
 
             // amplitude
-            double overallamp = (js.axis(2) + 32768) / 65536.;
+            double overallamp = (js.axis(2) + 32768) / 65536. * .75;
             if (!wave_lock) {
                 ampx = js.axis(3) / 32767.;
                 ampy = js.axis(4) * -1 / 32767.;
@@ -126,13 +126,13 @@ int main() {
                 res1[i] *= .25;
             }
         } else {
-            //res1 = vector<double>(n, 0.);
+            res1.zero();
         }
 
         reverb.process(res1);
         //d.process(res1);
-        //if(TIMEPLOT || FREQPLOT) p.add_data(res1);
-        return res1;
+        if(TIMEPLOT || FREQPLOT) p.add_data(res1);
+        return &res1;
     });
 
     // begin the program

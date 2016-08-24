@@ -23,9 +23,10 @@ Plotter::Plotter(int samp_rate, int FFT_s) {
     init();
 }
 
-void Plotter::add_data(const std::vector<double> data) {
+void Plotter::add_data(const RTArray<double>& data) {
     std::copy(in+data.size(), in+fft_size, in); // shift input array left
-    std::copy(data.cbegin(), data.cend(), in+fft_size-data.size()); // new data -> input array
+    for(size_t i = 0; i < data.size(); i++)
+        in[fft_size-data.size()+i] = data[i]; // new data -> input array
     last_add_size = data.size();
 }
 
@@ -42,6 +43,7 @@ void Plotter::plot(bool timeplot, bool freqplot) {
     if(first_plot) {
         if(timeplot) {
             *gp << "set term x11 0\n";
+            *gp << "set yrange [-1:1]\n";
             *gp << "plot '-' with lines\n";
             gp->send1d(timedata);
         }
