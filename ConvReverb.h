@@ -20,9 +20,11 @@ class ConvReverb : public Effect {
 public:
     ConvReverb();
     ~ConvReverb();
+    void setAmount(double amt) { amount = amt; }
 protected:
     virtual void subprocess(const RTArray<double>&);
 private:
+    double amount = .5; // 0-1
     const int block_size = 1024;
     int res_size;
     std::vector<double> fir;

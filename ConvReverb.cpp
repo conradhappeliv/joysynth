@@ -64,6 +64,6 @@ void ConvReverb::subprocess(const RTArray<double>& in){
         }
         sampsprocessed += block_size;
     }
-
+    for(int i = 0; i < processedsize; i++) processed[i] *= amount;
     for(int i = 0; i < size; i++) processed[i] += in[i];
 };
