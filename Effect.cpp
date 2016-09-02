@@ -4,7 +4,7 @@ using namespace std;
 
 void Effect::process(RTArray<double>& buffer) {
     size_t size = buffer.size();
-    for(int i = 0; i < processedsize; i++) processed[i] = 0;
+    for(int i = 0; i < processed.size(); i++) processed[i] = 0;
     // do the effect processing
     subprocess(buffer);
     // zero buffer (may not be necessary)
@@ -16,11 +16,11 @@ void Effect::process(RTArray<double>& buffer) {
     // add the newly-processed samples
     for(int i = 0; i < size; i++) buffer[i] = buffer[i] + processed[i];
     // erase what we just added and add the remainder to the feedback vector
-    if(processedsize > size) {
-        if(remaining.size() < processedsize-size) {
-            remaining.insert(remaining.end(), processedsize-size-remaining.size(), 0);
+    if(processed.size()> size) {
+        if(remaining.size() < processed.size()-size) {
+            remaining.insert(remaining.end(), processed.size()-size-remaining.size(), 0);
         }
-        for(int i = size; i < processedsize; i++) remaining[i-size] += processed[i];
+        for(int i = size; i < processed.size(); i++) remaining[i-size] += processed[i];
     }
 }
 

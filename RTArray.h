@@ -4,6 +4,7 @@
 #include <stddef.h>
 #include <algorithm>
 #include <iostream>
+#include <stdexcept>
 
 template <class T>
 class RTArray {
@@ -30,7 +31,7 @@ public:
     }
     T& operator[](size_t i) const {
         if(i < s) return data[i];
-        throw;
+        throw std::out_of_range("out of range");
     }
     size_t size() const { return s; }
 private:

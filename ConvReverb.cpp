@@ -13,7 +13,7 @@ ConvReverb::ConvReverb() {
         fir.push_back(stoi(tmp));
     }
     // normalize volume
-    res_size = block_size*2 + fir.size() - 1;
+    res_size = block_size + fir.size() - 1;
     transform(fir.begin(), fir.end(), fir.begin(), bind1st(multiplies<double>(), 1./32768./res_size));
 
     // init vectors
@@ -28,16 +28,16 @@ ConvReverb::ConvReverb() {
 
     int sampsprocessed = 0;
     while(sampsprocessed < fir.size()) {
+        for(int i = 0; i < ffft_in.size(); i++) ffft_in[i] = 0;
+        for(int i = 0; i < ffft_out.size(); i++) ffft_out[i] = complex<double>(0);
         int remaining = fir.size() - sampsprocessed;
         copy(fir.begin()+sampsprocessed, fir.begin()+sampsprocessed+min(block_size, remaining), ffft_in.begin());
-        for(int i = 0; i < ffft_out.size(); i++) ffft_out[i] = complex<double>(0);
         fftw_execute(ffft_plan);
         FIR_segments.push_back(ffft_out);
         sampsprocessed += block_size;
     }
 
-    processed = new double[fir.size() + 1024 - 1];
-    processedsize = fir.size() + 1024 - 1;
+    processed.resize(res_size);
 }
 
 ConvReverb::~ConvReverb() {
@@ -60,10 +60,14 @@ void ConvReverb::subprocess(const RTArray<double>& in){
         }
         fftw_execute(ifft_plan);
         for(int i = 0; i < ifft_out.size(); i++) {
-            processed[sampsprocessed+i] += ifft_out[i];
+            try {
+                processed[sampsprocessed+i] += ifft_out[i];
+            } catch(std::out_of_range) {
+                break;
+            }
         }
         sampsprocessed += block_size;
     }
-    for(int i = 0; i < processedsize; i++) processed[i] *= amount;
+    for(int i = 0; i < processed.size(); i++) processed[i] *= amount;
     for(int i = 0; i < size; i++) processed[i] += in[i];
 };

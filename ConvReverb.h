@@ -13,6 +13,7 @@
 #include <condition_variable>
 #include <atomic>
 #include <mutex>
+#include <stdexcept>
 
 #include "fftw3.h"
 

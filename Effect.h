@@ -11,9 +11,8 @@ public:
     void process(RTArray<double>&);
     virtual void subprocess(const RTArray<double>&) = 0;
 protected:
-    int processedsize = 1024;
     std::vector<double> timeConvolve(std::vector<double>, std::vector<double>);
-    double* processed;
+    RTArray<double> processed;
 private:
     std::vector<double> remaining;
 };
