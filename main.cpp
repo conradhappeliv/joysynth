@@ -15,6 +15,7 @@
 #include "Sawtooth.h"
 #include "Triangle.h"
 #include "ConvReverb.h"
+#include "BiquadLPF.h"
 
 using namespace std;
 
@@ -32,6 +33,7 @@ int main() {
     Sawtooth s3(44100);
     Triangle s4(44100);
     ConvReverb reverb;
+    BiquadLPF LPF;
     Audio a;
     int octave = 4;
     double prev_freq = 440;
@@ -116,6 +118,9 @@ int main() {
         transform(res1.begin(), res1.end(), res1.begin(), bind1st(multiplies<double>(), .25));
         //transform(res1.begin(), res1.end(), res1.begin(), bind1st(multiplies<double>(), .15));
         //reverb.process(res1);
+
+        LPF.setCutoff(pow((js.axis(5)+32768.)/65536, 3)*15000+50);
+        LPF.process(res1);
         if(TIMEPLOT || FREQPLOT) p.add_data(res1);
         return res1;
     });

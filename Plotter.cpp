@@ -35,7 +35,7 @@ void Plotter::plot(bool timeplot, bool freqplot) {
     std::vector<std::pair<double, double>> outdata;
     for(int i = 0; i < 3500; i++)
         outdata.push_back(std::make_pair(i * sample_rate / fft_size,
-                                         sqrt(pow(out[i][0], 2) + pow(out[i][1],2))/sample_rate));
+                                         10*sqrt(pow(out[i][0], 2) + pow(out[i][1],2))/sample_rate));
 
     std::vector<double> timedata(in+fft_size-last_add_size, in+fft_size);
     // time
