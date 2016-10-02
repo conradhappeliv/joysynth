@@ -3,6 +3,7 @@
 void Sine::synthesize(std::vector<double>& out) {
     double freq = 2.*M_PI*frequency/sampleRate;
     for(int i = 0; i < sampleRate/frequency; i++) {
-        out.push_back(cos(i*freq));
+        out.push_back(cos(i*freq - phase));
     }
+    phase += (1-((int) (sampleRate/frequency))/(sampleRate/frequency))*2*M_PI;
 }

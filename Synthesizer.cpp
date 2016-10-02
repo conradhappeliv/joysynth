@@ -33,6 +33,7 @@ void Synthesizer::getBuffer(RTArray<double>& out) {
         }
         processed.clear();
         synthesize(processed);
+        if(phase >= 2*M_PI) phase -= 2*M_PI;
         if(insertedsize + processed.size() > size) {
             for(size_t i = 0; i < size-insertedsize; i++) out[insertedsize+i] = processed[i];
             for(size_t i = size-insertedsize; i < processed.size(); i++) remaining.push_back(processed[i]);

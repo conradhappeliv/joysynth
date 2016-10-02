@@ -22,6 +22,8 @@ private:
     std::thread poll_thread;
     std::unordered_map<int, std::function<void()>> on_button_press;
     std::unordered_map<int, std::function<void()>> on_button_release;
+    std::unordered_map<int, std::function<void()>> on_axis_up;
+    std::unordered_map<int, std::function<void()>> on_axis_down;
 
     bool init(std::string);
     void get_initial_state();
@@ -38,6 +40,8 @@ public:
     short axis(int axis_num) { return axes[axis_num]; }
     void set_button_press_callback(int button_num, std::function<void()> fun) { on_button_press[button_num] = fun; }
     void set_button_release_callback(int button_num, std::function<void()> fun) { on_button_release[button_num] = fun; }
+    void set_axis_as_button_up(int axis_num, std::function<void()> fun) { on_axis_up[axis_num] = fun; }
+    void set_axis_as_button_down(int axis_num, std::function<void()> fun) { on_axis_down[axis_num] = fun; }
 };
 
 

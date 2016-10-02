@@ -3,6 +3,8 @@
 
 #include <iostream>
 #include <vector>
+#include <map>
+#include <set>
 #include <cmath>
 #include <algorithm>
 #include <functional>
@@ -62,6 +64,23 @@ int main() {
         }
     }
 
+    map<string, vector<double>> scales;
+    scales["major"] = {0, 2, 4, 5, 7, 9, 11};
+    scales["minor"] = {0, 2, 3, 5, 7, 8, 10};
+    scales["jazz"] = {0, 3, 5, 6, 7, 10, 11};
+
+    for(auto scale = scales.begin(); scale != scales.end(); scale++) {
+        vector<double> newtmp;
+        int i = 0;
+        for (auto pitch = chrom_pitches.begin(); pitch != chrom_pitches.end(); pitch++) {
+            if(find(scale->second.begin(), scale->second.end(), i%12) != scale->second.end()) newtmp.push_back(*pitch);
+            i++;
+        }
+        scale->second = newtmp;
+    }
+
+    auto cur_scale = scales.begin();
+
     // assign buttons
     // A B X Y LB RB SEL STA Home LS RS
     js.set_button_press_callback(0, [&mod_on]() { mod_on = true; });
@@ -71,6 +90,8 @@ int main() {
     js.set_button_press_callback(3, [&](){ if(octave < highest_octave) octave++; });
     js.set_button_press_callback(9, [&pitch_lock]() { pitch_lock = !pitch_lock; });
     js.set_button_press_callback(10, [&wave_lock]() { wave_lock = !wave_lock; });
+    js.set_axis_as_button_up(7, [&cur_scale, &scales, &cout]() { if(cur_scale != scales.begin()) --cur_scale; cout << (*cur_scale).first << endl; });
+    js.set_axis_as_button_down(7, [&cur_scale, &scales, &cout]() { if(cur_scale != (--scales.rbegin()).base()) ++cur_scale; cout << (*cur_scale).first << endl; });
 
     RTArray<double> res1(1024), res2(1024), res3(1024), res4(1024);
 
@@ -83,8 +104,9 @@ int main() {
                 newfreq = 440 * pow(2, -4 + octave) * (pow(2, js.axis(1) * -1 / 32767.));
                 // snapping
                 if (pitch_snap) {
-                    auto lower = lower_bound(chrom_pitches.begin(), chrom_pitches.end(), newfreq);
-                    if (lower != chrom_pitches.end() && lower != chrom_pitches.end() + 1) {
+                    auto source = cur_scale->second;
+                    auto lower = lower_bound(source.begin(), source.end(), newfreq);
+                    if (lower != source.end() && lower != source.end() + 1) {
                         if (newfreq - *lower > *(lower + 1) - newfreq) lower++;
                         newfreq = *lower;
                     }
@@ -109,8 +131,8 @@ int main() {
             }
             s1.setAmplitude(overallamp * (.5 + .5 * ampy));
             s2.setAmplitude(overallamp * (.5 + .5 * ampy * -1));
-            s3.setAmplitude(overallamp * (.5 + .5 * ampx));
-            s4.setAmplitude(overallamp * (.5 + .5 * ampx * -1));
+            s3.setAmplitude(0);//overallamp * (.5 + .5 * ampx));
+            s4.setAmplitude(0);//overallamp * (.5 + .5 * ampx * -1));
 
             s1.setMod(mod_on);
             s2.setMod(mod_on);
@@ -129,8 +151,8 @@ int main() {
             res1.zero();
         }
 
-        reverb.setAmount((js.axis(5) + 32768) / 65536. /2);
-        reverb.process(res1);
+        //reverb.setAmount((js.axis(5) + 32768) / 65536. /2);
+        //reverb.process(res1);
         //d.process(res1);
         if(TIMEPLOT || FREQPLOT) p.add_data(res1);
         return &res1;

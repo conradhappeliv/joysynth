@@ -19,6 +19,7 @@ protected:
     double amplitude = 1;
     virtual void synthesize(std::vector<double>&) = 0;
     std::vector<double> processed;
+    double phase = 0;
 public:
     Synthesizer() { init(); };
     Synthesizer(int sampRate):
