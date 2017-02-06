@@ -13,7 +13,8 @@ set(SOURCE_FILES Synthesizer.cpp Synthesizer.h
                  ConvReverb.cpp ConvReverb.h
                  Sawtooth.cpp Sawtooth.h
                  Triangle.cpp Triangle.h
-                 Delay.cpp Delay.h
+                 FixedDelay.cpp FixedDelay.h
+                 RTArray.h
                  BiquadLPF.cpp BiquadLPF.h)
 set(LIBRARIES "jack"
               "pthread"

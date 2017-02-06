@@ -46,6 +46,8 @@ void Controller::poll() {
             }
             buttons[js_event.number] = js_event.value;
         } else // axis
+            if(axes[js_event.number] < 30000 && js_event.value >= 30000 && on_axis_up.count(js_event.number)) on_axis_up[js_event.number]();
+            else if(axes[js_event.number] > -30000 && js_event.value <= -30000 && on_axis_down.count(js_event.number)) on_axis_down[js_event.number]();
             axes[js_event.number] = js_event.value;
     }
 }

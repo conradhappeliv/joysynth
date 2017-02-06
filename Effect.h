@@ -4,13 +4,15 @@
 #include <algorithm>
 #include <vector>
 #include <iostream>
+#include "RTArray.h"
 
 class Effect {
 public:
-    void process(std::vector<double>&);
-    virtual std::vector<double> subprocess(const std::vector<double>) = 0;
+    void process(RTArray<double>&);
+    virtual void subprocess(const RTArray<double>&) = 0;
 protected:
-    std::vector<double> timeConvolve(std::vector<double>, std::vector<double>);
+    void timeConvolve(const RTArray<double>& a, const RTArray<double>& b, RTArray<double>& res);
+    RTArray<double> processed;
 private:
     std::vector<double> remaining;
 };
