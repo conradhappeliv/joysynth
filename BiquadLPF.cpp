@@ -14,11 +14,11 @@ void BiquadLPF::init() {
     b2 = (1-K/Q+K*K)*norm;
 }
 
-void BiquadLPF::process(std::vector<double>& buffer) {
-    for(auto it = buffer.begin(); it != buffer.end(); it++) {
-        double old = *it;
-        *it = old*a0+z1;
-        z1 = old*a1 + z2 - b1*(*it);
-        z2 = old*a2 - b2*(*it);
+void BiquadLPF::subprocess(const RTArray<double> &input) {
+    for(int i = 0; i < input.size(); i++) {
+        double old = input[i];
+        processed[i] = old*a0+z1;
+        z1 = old*a1 + z2 - b1*(processed[i]);
+        z2 = old*a2 - b2*(processed[i]);
     }
 }

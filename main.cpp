@@ -30,7 +30,7 @@ int main() {
     // program parameters
     int lowest_octave = 1;
     int highest_octave = 8;
-    double smoothing = .65; // portamento/rate of change, 0-1 (0 is instant, 1 never moves)
+    double smoothing = .50; // portamento/rate of change, 0-1 (0 is instant, 1 never moves)
 
     // globals
     Controller js;
@@ -94,8 +94,8 @@ int main() {
     js.set_button_press_callback(5, [&](){ if(curEffect != numEffects) curEffect++; });
     js.set_button_press_callback(9, [&pitch_lock]() { pitch_lock = !pitch_lock; });
     js.set_button_press_callback(10, [&wave_lock]() { wave_lock = !wave_lock; });
-    js.set_axis_as_button_up(7, [&cur_scale, &scales, &cout]() { if(cur_scale != scales.begin()) --cur_scale; cout << (*cur_scale).first << endl; });
-    js.set_axis_as_button_down(7, [&cur_scale, &scales, &cout]() { if(cur_scale != (--scales.rbegin()).base()) ++cur_scale; cout << (*cur_scale).first << endl; });
+    js.set_axis_as_button_up(7, [&cur_scale, &scales]() { if(cur_scale != scales.begin()) --cur_scale; cout << (*cur_scale).first << endl; });
+    js.set_axis_as_button_down(7, [&cur_scale, &scales]() { if(cur_scale != (--scales.rbegin()).base()) ++cur_scale; cout << (*cur_scale).first << endl; });
 
     RTArray<double> res1(1024), res2(1024), res3(1024), res4(1024);
 

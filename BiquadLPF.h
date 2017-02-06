@@ -8,10 +8,13 @@
 #include <cmath>
 #include <vector>
 
-class BiquadLPF {
+#include "RTArray.h"
+#include "Effect.h"
+
+class BiquadLPF : public Effect {
 public:
     BiquadLPF() { init(); }
-    void process(std::vector<double>&);
+    void subprocess(const RTArray<double>& input);
     void setCutoff(double c) { cutoff = c/sampleRate; init(); }
 private:
     void init();
