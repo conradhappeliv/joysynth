@@ -3,7 +3,7 @@
 
 #include "Sine.h"
 #include "ConvReverb.h"
-#include "Delay.h"
+#include "FixedDelay.h"
 #include <omp.h>
 
 using namespace std;

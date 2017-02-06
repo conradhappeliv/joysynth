@@ -25,16 +25,12 @@ void Effect::process(RTArray<double>& buffer) {
 }
 
 // based on: http://stackoverflow.com/a/8425094
-vector<double> Effect::timeConvolve(vector<double> a, vector<double> b) {
-    vector<double> result;
-    reverse(b.begin(), b.end());
-    result.insert(result.begin(), a.size() + b.size() - 1, 0);
+void Effect::timeConvolve(const RTArray<double>& a, const RTArray<double>& b, RTArray<double>& res) {
     for(int i = 0; i <  a.size() + b.size() - 1; i++) {
         int min = (i >= b.size()-1) ? i - (b.size()-1) : 0;
         int max = (i < a.size()-1) ? i : a.size()-1;
         for(int j = min; j <= max; j++) {
-            result[i] += a[j] * b[i-j];
+            res[i] += a[j] * b[i-j];
         }
     }
-    return result;
 }

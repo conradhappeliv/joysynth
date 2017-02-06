@@ -53,7 +53,7 @@ void ConvReverb::subprocess(const RTArray<double>& in){
     fftw_execute(ffft_plan);
 
     int sampsprocessed = 0;
-    for(int i = 0; i < (int) FIR_segments.size(); i++) {
+    for(int i = 0; i < 10/*(int) FIR_segments.size()*/; i++) {
         const std::vector<std::complex<double>>& segment = FIR_segments[i];
         for(int i = 0; i < segment.size(); i++) {
             ifft_in[i] = segment[i] * ffft_out[i];

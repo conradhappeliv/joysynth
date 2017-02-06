@@ -6,6 +6,8 @@
 #include "Synthesizer.h"
 
 class Sawtooth : public Synthesizer {
+private:
+    double curx = 0;
 protected:
     virtual void synthesize(std::vector<double>&);
 public:

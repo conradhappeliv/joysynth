@@ -1,13 +1,16 @@
 #ifndef JOYSYNTH2_DELAY_H
 #define JOYSYNTH2_DELAY_H
 
+#include <vector>
 
 #include "Effect.h"
 
-class Delay : public Effect {
+class FixedDelay : public Effect {
+private:
+    RTArray<double> FIR;
 public:
-    Delay();
-    ~Delay();
+    FixedDelay();
+    ~FixedDelay();
 protected:
     virtual void subprocess(const RTArray<double>&);
 };

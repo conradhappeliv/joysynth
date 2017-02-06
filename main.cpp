@@ -4,8 +4,6 @@
 #include <iostream>
 #include <vector>
 #include <map>
-#include <set>
-#include <cmath>
 #include <algorithm>
 #include <functional>
 #include <boost/filesystem.hpp>
@@ -19,7 +17,7 @@
 #include "Sawtooth.h"
 #include "Triangle.h"
 #include "ConvReverb.h"
-#include "Delay.h"
+#include "FixedDelay.h"
 
 using namespace std;
 
@@ -40,9 +38,11 @@ int main() {
     Square s2(44100);
     Sawtooth s3(44100);
     Triangle s4(44100);
-    ConvReverb reverb;
     Audio a;
-    Delay d;
+    int curEffect = 0;
+    int numEffects = 2;
+    ConvReverb reverb;
+    FixedDelay d;
     int octave = 4;
     double prev_freq = 440;
     bool activated = true;
@@ -55,7 +55,7 @@ int main() {
 
     // calculate chromatic pitches for snapping
     {
-        vector<double> pitch_ratios = {1, 16./15, 1.125, 1.2, 1.25, 4./3, 45. / 32, 1.5, 1.6, 5./3, 1.8, 1.875};
+        const vector<double> pitch_ratios = {1, 16./15, 1.125, 1.2, 1.25, 4./3, 45. / 32, 1.5, 1.6, 5./3, 1.8, 1.875};
         for (int i = lowest_octave - 1; i < highest_octave + 1; i++) {
             double A = 440 * pow(2, -4 + i);
             for(double ratio: pitch_ratios) {
@@ -88,6 +88,8 @@ int main() {
     js.set_button_press_callback(1, [&pitch_snap]() { pitch_snap = !pitch_snap; });
     js.set_button_press_callback(2, [&](){ if(octave > lowest_octave) octave--; });
     js.set_button_press_callback(3, [&](){ if(octave < highest_octave) octave++; });
+    js.set_button_press_callback(4, [&](){ if(curEffect != 0) curEffect--; });
+    js.set_button_press_callback(5, [&](){ if(curEffect != numEffects) curEffect++; });
     js.set_button_press_callback(9, [&pitch_lock]() { pitch_lock = !pitch_lock; });
     js.set_button_press_callback(10, [&wave_lock]() { wave_lock = !wave_lock; });
     js.set_axis_as_button_up(7, [&cur_scale, &scales, &cout]() { if(cur_scale != scales.begin()) --cur_scale; cout << (*cur_scale).first << endl; });
@@ -131,8 +133,8 @@ int main() {
             }
             s1.setAmplitude(overallamp * (.5 + .5 * ampy));
             s2.setAmplitude(overallamp * (.5 + .5 * ampy * -1));
-            s3.setAmplitude(0);//overallamp * (.5 + .5 * ampx));
-            s4.setAmplitude(0);//overallamp * (.5 + .5 * ampx * -1));
+            s3.setAmplitude(overallamp * (.5 + .5 * ampx));
+            s4.setAmplitude(overallamp * (.5 + .5 * ampx * -1));
 
             s1.setMod(mod_on);
             s2.setMod(mod_on);
@@ -151,9 +153,19 @@ int main() {
             res1.zero();
         }
 
-        //reverb.setAmount((js.axis(5) + 32768) / 65536. /2);
-        //reverb.process(res1);
-        //d.process(res1);
+        switch(curEffect) {
+            case 0:
+                break;
+            case 1:
+                d.process(res1);
+                break;
+            case 2:
+                reverb.setAmount((js.axis(5) + 32768) / 65536. /2);
+                reverb.process(res1);
+                break;
+            default:
+                break;
+        }
         if(TIMEPLOT || FREQPLOT) p.add_data(res1);
         return &res1;
     });
